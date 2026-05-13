@@ -2,6 +2,9 @@
 
 SvelteKit static adapter for **Twitch Extensions**: post-build pass externalizes the inline bootstrap, sets `#svelte-app`, and aligns with Twitch’s extension CSP.
 
+> [!WARNING]
+> **Work in progress.** This package is under active development, has not been thoroughly tested yet, and its API and behavior may change without a major-version bump. Use at your own risk in production.
+
 **[Documentation, Twitch compliance steps & full options table](https://github.com/giggiux/sveltekit-adapter-twitch-extension#readme)**
 
 ## Quick start

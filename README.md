@@ -2,6 +2,9 @@
 
 Static adapter for [SvelteKit](https://svelte.dev/docs/kit) based on [`@sveltejs/adapter-static`](https://svelte.dev/docs/kit/adapter-static), with a **post-build pass** aimed at [Twitch Extensions](https://dev.twitch.tv/docs/extensions/) asset hosting and CSP.
 
+> [!WARNING]
+> **Work in progress.** This package is under active development, has not been thoroughly tested yet, and its API and behavior may change without a major-version bump. Use at your own risk in production.
+
 Repository: [github.com/giggiux/sveltekit-adapter-twitch-extension](https://github.com/giggiux/sveltekit-adapter-twitch-extension)
 
 ## Why this exists (Twitch CSP)
@@ -22,7 +25,7 @@ After the normal `adapter-static` output is written (`writeClient`, `writePreren
 
 3. **Rewrites the mount target** inside that script’s source before writing it to disk:
    - from: `const element = document.currentScript.parentElement;` (or the minified equivalent)
-   - to: `const element = document.getElementById('svelte-app');`  
+   - to: `const element = document.getElementById('svelte-app');`
    so hydration still works when the script is loaded via `src` (external scripts are not `document.currentScript` in the same way).
 
 4. **Writes external script file(s)** next to the HTML:
