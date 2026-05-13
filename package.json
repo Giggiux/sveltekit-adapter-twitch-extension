@@ -1,0 +1,15 @@
+{
+	"name": "sveltekit-adapter-twitch-extension-monorepo",
+	"private": true,
+	"scripts": {
+		"build:example": "pnpm --filter demo-app build",
+		"check:example": "pnpm --filter demo-app check",
+		"dev:example": "pnpm --filter demo-app dev",
+		"preview:example": "pnpm --filter demo-app preview"
+	},
+	"pnpm": {
+		"overrides": {
+			"vite": "8.0.11"
+		}
+	}
+}
