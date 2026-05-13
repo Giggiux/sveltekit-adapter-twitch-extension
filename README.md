@@ -108,28 +108,6 @@ Official reference: [Static site generation / adapter-static](https://svelte.dev
 
 TypeScript types: [`packages/sveltekit-adapter-twitch-extension/index.d.ts`](packages/sveltekit-adapter-twitch-extension/index.d.ts).
 
-## Publishing
-
-From the repository root (this monorepo):
-
-```sh
-pnpm publish --filter sveltekit-adapter-twitch-extension
-```
-
-Unscoped packages are **public** on npm by default (log in with the owning npm account).
-
-### Publish from GitHub Actions (push to `master`)
-
-The workflow [.github/workflows/publish.yml](.github/workflows/publish.yml) runs on **pushes to `master`** when the adapter package or root lockfile changes. It publishes **only if** the adapter `version` in [`packages/sveltekit-adapter-twitch-extension/package.json`](packages/sveltekit-adapter-twitch-extension/package.json) is **not** already on npm.
-
-1. Create an npm **access token** (granular publish token or classic **Automation** token).
-2. GitHub repo → **Settings → Secrets and variables → Actions** → secret **`NPM_TOKEN`**.
-3. Bump `version`, merge to `master`.
-
-`actions/setup-node` uses `registry-url: https://registry.npmjs.org`; `NODE_AUTH_TOKEN` is set from `NPM_TOKEN` for `pnpm publish`.
-
-If your default branch is **`main`**, add `main` to `branches:` in `publish.yml`.
-
 ## Development
 
 This repo is a pnpm workspace:
