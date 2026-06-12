@@ -1,6 +1,6 @@
 {
 	"name": "sveltekit-adapter-twitch-extension",
-	"version": "1.0.1",
+	"version": "1.1.1",
 	"description": "SvelteKit static adapter fork: post-processes output for Twitch Extensions CSP (external bootstrap script, #svelte-app mount).",
 	"keywords": [
 		"adapter",
