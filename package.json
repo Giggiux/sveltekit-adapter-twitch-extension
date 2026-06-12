@@ -1,6 +1,7 @@
 {
 	"name": "sveltekit-adapter-twitch-extension-monorepo",
 	"private": true,
+	"packageManager": "pnpm@11.2.2",
 	"scripts": {
 		"build:example": "pnpm --filter demo-app build",
 		"check:example": "pnpm --filter demo-app check",
