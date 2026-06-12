@@ -9,7 +9,7 @@ import { parse } from 'node-html-parser';
  * Relies on SvelteKit emitting `const element = document.currentScript.parentElement;`
  * in the inline bootstrap (see @sveltejs/kit `src/runtime/server/page/render.js`). If
  * that line changes across @sveltejs/kit upgrades, update the regexes in this file and
- * re-run `pnpm build` to verify index.html / 200.html and script.js.
+ * re-run `pnpm build` to verify prerendered HTML shells and script.js.
  */
 const MOUNT_LINE_RE = /const\s+element\s*=\s*document\.currentScript\.parentElement;/;
 const MOUNT_LINE_MIN = /const element=document\.currentScript\.parentElement;/;
@@ -51,20 +51,39 @@ function parseAndExtract(htmlPath) {
  *
  * @param {{ pages: string; log: { minor: (s: string) => void; warn: (s: string) => void; (s: string): void }; createZip?: boolean; removeStatic?: boolean }} opts
  */
+/**
+ * @param {string} pages
+ * @returns {string[]}
+ */
+function listHtmlShells(pages) {
+	return fs
+		.readdirSync(pages, { withFileTypes: true })
+		.filter((entry) => entry.isFile() && entry.name.endsWith('.html'))
+		.map((entry) => entry.name)
+		.sort((a, b) => {
+			if (a === 'index.html') return -1;
+			if (b === 'index.html') return 1;
+			return a.localeCompare(b);
+		});
+}
+
 export function postProcessTwitchExtensionBuild(opts) {
 	const { pages, log, createZip = false, removeStatic = true } = opts;
-	const names = ['index.html', '200.html'];
 	/** @type {{ path: string; js: string; doc: import('node-html-parser').HTMLElement; bootstrap: import('node-html-parser').HTMLElement }[]} */
 	const parsed = [];
 
-	for (const name of names) {
+	for (const name of listHtmlShells(pages)) {
 		const htmlPath = path.join(pages, name);
-		if (!fs.existsSync(htmlPath)) continue;
-		parsed.push({ path: htmlPath, ...parseAndExtract(htmlPath) });
+		try {
+			parsed.push({ path: htmlPath, ...parseAndExtract(htmlPath) });
+		} catch (e) {
+			const msg = e instanceof Error ? e.message : String(e);
+			log.warn(`sveltekit-adapter-twitch-extension: skipped ${name} (${msg})`);
+		}
 	}
 
 	if (parsed.length === 0) {
-		log.warn('sveltekit-adapter-twitch-extension: No index.html or 200.html found to post-process');
+		log.warn('sveltekit-adapter-twitch-extension: No prerendered HTML shells found to post-process');
 		return;
 	}
 
