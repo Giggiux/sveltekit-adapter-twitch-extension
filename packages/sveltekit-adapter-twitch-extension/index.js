@@ -1,20 +1,20 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { platforms } from './platforms.js';
 import { postProcessTwitchExtensionBuild } from './twitch-postprocess.js';
 
-/** @type {import('./index.js').default} */
+/** @type {typeof import('./index.js').default} */
 export default function (options) {
 	return {
 		name: 'sveltekit-adapter-twitch-extension',
-		/** @param {import('./internal.js').Builder2_0_0} builder */
 		async adapt(builder) {
-			if (!options?.fallback && builder.config.kit.router?.type !== 'hash') {
+			if (!options?.fallback && builder.config.router?.type !== 'hash') {
 				const dynamic_routes = builder.routes.filter((route) => route.prerender !== true);
 				if (dynamic_routes.length > 0 && options?.strict !== false) {
-					const prefix = path.relative('.', builder.config.kit.files.routes);
+					const prefix = path.relative('.', builder.config.files.routes);
 					const has_param_routes = builder.routes.some((route) => route.id.includes('['));
 					const config_option =
-						has_param_routes || JSON.stringify(builder.config.kit.prerender.entries) !== '["*"]'
+						has_param_routes || JSON.stringify(builder.config.prerender.entries) !== '["*"]'
 							? `  - adjust the \`prerender.entries\` config option ${
 									has_param_routes
 										? '(routes with parameters are not part of entry points by default)'
@@ -53,7 +53,6 @@ See https://svelte.dev/docs/kit/page-options#prerender for more details`
 			}
 
 			const {
-				// @ts-ignore
 				pages = 'build',
 				assets = pages,
 				fallback,
@@ -62,8 +61,8 @@ See https://svelte.dev/docs/kit/page-options#prerender for more details`
 				removeStatic
 			} = options ?? platform?.defaults ?? /** @type {import('./index.js').AdapterOptions} */ ({});
 
-			builder.rimraf(assets);
-			builder.rimraf(pages);
+			fs.rmSync(assets, { force: true, recursive: true });
+			fs.rmSync(pages, { force: true, recursive: true });
 
 			builder.generateEnvModule();
 			builder.writeClient(assets);

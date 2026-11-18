@@ -42,7 +42,7 @@ After the normal `adapter-static` output is written (`writeClient`, `writePreren
 
 **Still your responsibility in the app** (not done by the adapter):
 
-- Set **`kit.paths.relative: true`** in `svelte.config.js` so asset URLs work when the extension is not served from the domain root (see [SvelteKit `paths`](https://svelte.dev/docs/kit/configuration#paths)).
+- Set **`paths.relative: true`** in the `sveltekit()` plugin options in `vite.config.ts` so asset URLs work when the extension is not served from the domain root (see [SvelteKit `paths`](https://svelte.dev/docs/kit/configuration#paths)).
 - Use **`export const prerender = true`** (typically on the root layout) so pages are static enough for `adapter-static`, unless you intentionally use `fallback` for SPA-only routes.
 - Add the [Twitch Extension Helper](https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js) in `src/app.html` if you use the Twitch JS API.
 - Respect Twitch **connect-src** / **img-src** allowlists in the developer console for any APIs or CDNs you call.
@@ -53,29 +53,39 @@ After the normal `adapter-static` output is written (`writeClient`, `writePreren
 pnpm add -D sveltekit-adapter-twitch-extension
 ```
 
-Peer dependency: `@sveltejs/kit` v2 (already part of SvelteKit apps).
+Peer dependency: `@sveltejs/kit` v3 (already part of SvelteKit apps).
+
+## SvelteKit version support
+
+| Adapter | SvelteKit | Config file | Source |
+|---------|-----------|-------------|--------|
+| `2.x` | v3 | `vite.config.ts` (`sveltekit({ ... })`) | [`master`](https://github.com/giggiux/sveltekit-adapter-twitch-extension/tree/master) |
+| `1.x` | v2 | `svelte.config.js` (`kit: { ... }`) | [`sveltekit-2`](https://github.com/giggiux/sveltekit-adapter-twitch-extension/tree/sveltekit-2) |
+
+Still on SvelteKit 2? Install `sveltekit-adapter-twitch-extension@^1` and keep your `svelte.config.js`.
 
 ## Usage
 
-```js
-// svelte.config.js
+```ts
+// vite.config.ts
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
 import adapter from 'sveltekit-adapter-twitch-extension';
 
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
-	kit: {
-		paths: {
-			relative: true
-		},
-		adapter: adapter({
-			fallback: '200.html',
-			removeStatic: true,
-			createZip: false
+export default defineConfig({
+	plugins: [
+		sveltekit({
+			paths: {
+				relative: true
+			},
+			adapter: adapter({
+				fallback: '200.html',
+				removeStatic: true,
+				createZip: false
+			})
 		})
-	}
-};
-
-export default config;
+	]
+});
 ```
 
 ```js

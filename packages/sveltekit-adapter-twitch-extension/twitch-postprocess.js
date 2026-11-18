@@ -123,7 +123,7 @@ export function postProcessTwitchExtensionBuild(opts) {
 	}
 
 	if (createZip) {
-		const zipPath = path.join(path.dirname(pages), 'build.zip');
+		const zipPath = path.resolve(path.dirname(pages), 'build.zip');
 		try {
 			fs.rmSync(zipPath, { force: true });
 			execFileSync('zip', ['-q', '-r', zipPath, '.'], { cwd: pages, stdio: 'pipe' });

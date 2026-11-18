@@ -69,3 +69,6 @@ vite.config.ts.timestamp-*
 # Optional local scratch
 .kit-clone-tmp
 *.local
+
+# Local-only until npm publishing via CI is wanted
+.github/workflows/publish.yml
